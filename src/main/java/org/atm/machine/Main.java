@@ -1,55 +1,111 @@
 package org.atm.machine;
 
+import org.atm.machine.AtmOperation;
+import org.atm.machine.AtmoOPerationImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         AtmOperation op =new AtmoOPerationImpl();
-            int atmnumber=12345;//hardcode
-            int atmpin=123;
+
+        // Create a Map to store user ATM numbers and PINs
+        Map<Integer, Integer> atmUsers = new HashMap<>();
+
         Scanner in = new Scanner(System.in);
         System.out.println("Welcome to ATM Machine!!!");
-        System.out.println("Enter Atm Number:");
-        int atmNumber=in.nextInt();
-        System.out.println("Enter pin:");
-        int pin=in.nextInt();
-        if((atmNumber==atmnumber)&&(atmpin==pin)){
-            while (true){
-                System.out.println("1.View Available Balance\n2. Withdraw Amount\n 3. Deposit  Amount\n 4. View MinStatement\n5. Exit");
 
-                System.out.println(" Enter Choice:");
-                int ch = in.nextInt();
-                if(ch==1){
-                    op.viewBalance();
-                } else if (ch==2) {
-                    System.out.println("Enter a Amount to withdraw");
-                     double withdrawAmount=in.nextDouble();
-                     op.withdrawAmount(withdrawAmount);
+        while (true) {
+            System.out.println("1. Login");
+            System.out.println("2. Create Account");
+            System.out.println("3. Exit");
+            System.out.println("Enter Choice:");
 
-                }else if (ch==3) {
-                    System.out.println("Enter ammount to Deposit:");
-                   double depositAmount=in.nextDouble();
-                   op.depositAmount(depositAmount);
-                }  else if (ch==4) {
-                    op.viewMiniStatment();
+            int choice = in.nextInt();
 
-                }else if (ch==5) {
-                    System.out.println("Collect your ATM Card");
-                    System.out.println("Thank you for using ATM machine!!");
+            switch (choice) {
+                case 1:
+                    login(atmUsers, op);
+                    break;
+                case 2:
+                    createAccount(atmUsers, in);
+                    break;
+                case 3:
+                    System.out.println("Thank you for using ATM machine!");
                     System.exit(0);
-                }else{
-                    System.out.println("Please enter correct choice:");
-                }
-
-
-
-
+                default:
+                    System.out.println("Please enter a valid choice.");
+                    break;
             }
-
-        }else{
-            System.out.println("Incorrect Atm Number or pin");
-            System.exit(0);
-
         }
+    }
+
+    private static void login(Map<Integer, Integer> atmUsers, AtmOperation op) {
+        Scanner in = new Scanner(System.in);
+
+        System.out.println("Enter ATM Number:");
+        int atmNumber = in.nextInt();
+
+        System.out.println("Enter PIN:");
+        int pin = in.nextInt();
+
+        if (authenticate(atmUsers, atmNumber, pin)) {
+            while (true) {
+                System.out.println("1. View Available Balance");
+                System.out.println("2. Withdraw Amount");
+                System.out.println("3. Deposit Amount");
+                System.out.println("4. View Mini Statement");
+                System.out.println("5. Exit");
+                System.out.println("Enter Choice:");
+
+                int choice = in.nextInt();
+
+                switch (choice) {
+                    case 1:
+                        op.viewBalance();
+                        break;
+                    case 2:
+                        System.out.println("Enter Amount to Withdraw:");
+                        double withdrawAmount = in.nextDouble();
+                        op.withdrawAmount(withdrawAmount);
+                        break;
+                    case 3:
+                        System.out.println("Enter Amount to Deposit:");
+                        double depositAmount = in.nextDouble();
+                        op.depositAmount(depositAmount);
+                        break;
+                    case 4:
+                        op.viewMiniStatment();
+
+                        break;
+                    case 5:
+                        System.out.println("Collect your ATM Card");
+                        System.out.println("Thank you for using ATM machine!!");
+                        System.exit(0);
+                    default:
+                        System.out.println("Please enter a correct choice.");
+                        break;
+                }
+            }
+        } else {
+            System.out.println("Incorrect ATM Number or PIN");
+        }
+    }
+
+    private static void createAccount(Map<Integer, Integer> atmUsers, Scanner in) {
+        System.out.println("Enter a new ATM Number:");
+        int atmNumber = in.nextInt();
+
+        System.out.println("Enter a new PIN:");
+        int pin = in.nextInt();
+
+        atmUsers.put(atmNumber, pin);
+        System.out.println("Account created successfully!");
+    }
+
+    private static boolean authenticate(Map<Integer, Integer> atmUsers, int atmNumber, int pin) {
+        return atmUsers.containsKey(atmNumber) && atmUsers.get(atmNumber) == pin;
     }
 }

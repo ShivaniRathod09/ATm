@@ -13,15 +13,22 @@ public class AtmoOPerationImpl implements AtmOperation  {
 
     @Override
     public void withdrawAmount(double withdrawAmount) {
-       if(withdrawAmount<= atm.getBalance()){
-           ministmt.put(withdrawAmount,"Amount withdraw");
-           System.out.println(withdrawAmount+"collect the Cash "+withdrawAmount);
-           atm.setBalance(atm.getBalance()-withdrawAmount);
-           viewBalance();
+        if(withdrawAmount%500==0) {
 
-       }else{
-           System.out.println("Insufficient Balance!!");
-       }
+
+            if (withdrawAmount <= atm.getBalance()) {
+                ministmt.put(withdrawAmount, "Amount withdraw");
+                System.out.println(withdrawAmount + "collect the Cash " + withdrawAmount);
+                atm.setBalance(atm.getBalance() - withdrawAmount);
+                viewBalance();
+
+            } else {
+                System.out.println("Insufficient Balance!!");
+            }
+        }else {
+            System.out.println("please enter the amount in multipal of500");
+
+        }
 
 
     }
